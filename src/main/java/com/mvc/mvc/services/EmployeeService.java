@@ -5,6 +5,7 @@ import com.mvc.mvc.entities.EmployeeEntity;
 import com.mvc.mvc.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 // CORRECT: from Spring Framework Core
+import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;

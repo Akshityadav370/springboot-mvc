@@ -4,6 +4,7 @@ import com.mvc.mvc.dto.EmployeeDTO;
 import com.mvc.mvc.entities.EmployeeEntity;
 import com.mvc.mvc.repositories.EmployeeRepository;
 import com.mvc.mvc.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,13 +49,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody EmployeeDTO inputEmployee) {
+    public ResponseEntity<EmployeeDTO> createNewEmployee(@RequestBody @Valid EmployeeDTO inputEmployee) {
         EmployeeDTO savedEmployee = employeeService.createNewEmployee(inputEmployee);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO, @PathVariable Long employeeId) {
+    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody @Valid EmployeeDTO employeeDTO, @PathVariable(name = "id") Long employeeId) {
 //        return employeeService.updateEmployeeById(employeeId, employeeDTO);
         return ResponseEntity.ok(employeeService.updateEmployeeById(employeeId, employeeDTO));
     }
@@ -71,7 +72,7 @@ public class EmployeeController {
 
     @PatchMapping(path = "/{id}")
     public ResponseEntity<EmployeeDTO> updatePartialEmployee(@RequestBody Map<String, Object> updates,
-                                             @PathVariable Long employeeId) {
+                                             @PathVariable(name = "id") Long employeeId) {
         EmployeeDTO employeeDTO = employeeService.updatePartialEmployeeById(employeeId, updates);
         if (employeeDTO == null)
             return ResponseEntity.notFound().build();
