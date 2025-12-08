@@ -2,6 +2,7 @@ package com.mvc.mvc.services;
 
 import com.mvc.mvc.dto.EmployeeDTO;
 import com.mvc.mvc.entities.EmployeeEntity;
+import com.mvc.mvc.exceptions.ResourceNotFoundException;
 import com.mvc.mvc.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 // CORRECT: from Spring Framework Core
@@ -55,15 +56,15 @@ public class EmployeeService {
         return modelMapper.map(savedEmployeeEntity, EmployeeDTO.class);
     }
 
-    public boolean isExistsByEmployeeId(Long employeeId) {
-        return employeeRepository.existsById(employeeId);
+    public void isExistsByEmployeeId(Long employeeId) {
+        boolean exists = employeeRepository.existsById(employeeId);
+        if (!exists)
+            throw new ResourceNotFoundException("Employee not found with id: " + employeeId);
     }
 
     public boolean deleteEmployeeById(Long employeeId) {
         try {
-            boolean exists = isExistsByEmployeeId(employeeId);
-            if (!exists)
-                return false;
+            isExistsByEmployeeId(employeeId);
             employeeRepository.deleteById(employeeId);
             return true;
         } catch (Exception e) {
@@ -72,9 +73,7 @@ public class EmployeeService {
     }
 
     public EmployeeDTO updatePartialEmployeeById(Long employeeId, Map<String, Object> updates) {
-        boolean exists = isExistsByEmployeeId(employeeId);
-        if (!exists)
-            return null;
+        isExistsByEmployeeId(employeeId);
         EmployeeEntity employeeEntity = employeeRepository.findById(employeeId).get();
         updates.forEach((field, value) -> {
             Field fieldToBeUpdated = ReflectionUtils.findField(EmployeeEntity.class, field);

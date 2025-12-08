@@ -2,6 +2,7 @@ package com.mvc.mvc.controllers;
 
 import com.mvc.mvc.dto.EmployeeDTO;
 import com.mvc.mvc.entities.EmployeeEntity;
+import com.mvc.mvc.exceptions.ResourceNotFoundException;
 import com.mvc.mvc.repositories.EmployeeRepository;
 import com.mvc.mvc.services.EmployeeService;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class EmployeeController {
 //        return ResponseEntity.ok(employee);
         return employee
                 .map(employeeDTO -> ResponseEntity.ok(employeeDTO))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: "+employeeId));
     }
 
     @GetMapping
